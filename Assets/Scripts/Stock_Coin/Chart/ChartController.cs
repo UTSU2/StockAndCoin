@@ -1,0 +1,67 @@
+using UnityEngine;
+using System.Linq;
+using System.Collections.Generic;
+using UnityEngine.UI;
+
+public class ChartController : MonoBehaviour
+{
+    public GameObject candlePrefab;
+    public Transform candleContainer;
+    public Sprite bullishSprite; // high
+    public Sprite bearishSprite; // low
+
+    public float candleWidth = 12f;
+    public float candleGap = 4f;
+    public float chartHeight = 300f;
+
+    public void DrawChart(List<CandleData> data)
+    {
+        foreach (Transform child in candleContainer)
+            Destroy(child.gameObject);
+
+        float max = data.Max(c => c.high);
+        float min = data.Min(c => c.low);
+
+        for(int i=0;i<data.Count; i++)
+        {
+            var candle = data[i];
+
+            GameObject obj = Instantiate(candlePrefab, candleContainer);
+            RectTransform rect = obj.GetComponent<RectTransform>();
+
+            float x = i * (candleWidth + candleGap);
+            rect.anchoredPosition = new Vector2(x, 0);
+
+            float openY = Normalize(candle.open, min, max);
+            float closeY = Normalize(candle.close, min, max);
+            float highY = Normalize(candle.high, min, max);
+            float lowY = Normalize(candle.low, min, max);
+
+            float bodyTop = Mathf.Max(openY, closeY);
+            float bodyBot = Mathf.Min(openY, closeY);
+
+            //body
+            var body = obj.transform.Find("Body").GetComponent<RectTransform>();
+            var bodyImg = body.GetComponent<Image>();
+
+            body.anchoredPosition = new Vector2(0, bodyBot);
+            body.sizeDelta = new Vector2(candleWidth, bodyTop - bodyBot);
+
+            bool isBull = candle.close >= candle.open;
+            bodyImg.sprite = isBull ? bullishSprite : bearishSprite;
+
+            //wick
+            var wick = obj.transform.Find("Wick").GetComponent<RectTransform>();
+
+            wick.anchoredPosition = new Vector2(0, lowY);
+            wick.sizeDelta = new Vector2(2f, highY - lowY);
+        }
+    }
+
+    float Normalize(float price, float min, float max)
+    {
+        if (Mathf.Approximately(max, min))
+            return chartHeight * 0.5f;
+        return (price - min) / (max - min) * chartHeight;
+    }
+}
