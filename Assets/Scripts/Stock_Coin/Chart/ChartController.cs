@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using Data;
 
 public class ChartController : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class ChartController : MonoBehaviour
         float max = data.Max(c => c.high);
         float min = data.Min(c => c.low);
 
-        for(int i=0;i<data.Count; i++)
+        for (int i = 0; i < data.Count; i++)
         {
             var candle = data[i];
 
