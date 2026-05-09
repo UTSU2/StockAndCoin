@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Data
 {
     public enum MarketType
@@ -24,18 +26,25 @@ namespace Data
         public string name;        // "Apple", "Bitcoin"
         public MarketType marketType;
         public string symbol;      // 차트 표시용 심볼
+        public float basePrice;    // 초기 기준 가격
+    }
+
+    [System.Serializable]
+    public class EventImpactData
+    {
+        public string assetId;
+        public float impactValue;
     }
 
     [System.Serializable]
     public class MarketEventData
     {
         public string id;
-        public string[] assetIds;     // 어떤 주식/코인에 연결되는지
+        public List<EventImpactData> impacts = new();
         public EventType eventType;
         public string title;
         public string description;
         public string date;
-        public float impactValue;  // 가격 영향도
     }
 
     [System.Serializable]

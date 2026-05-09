@@ -6,6 +6,11 @@ using Data;
 
 public class ChartController : MonoBehaviour
 {
+    [Header("Database")]
+    public MarketDatabase marketDatabase;
+    public string currentAssetId = "BTC"; //  chart 가 열릴 때 마다 해당 id로 조회
+
+    [Header("Candle UI")]
     public GameObject candlePrefab;
     public Transform candleContainer;
     public Sprite bullishSprite; // high
@@ -15,6 +20,27 @@ public class ChartController : MonoBehaviour
     public float candleGap = 4f;
     public float chartHeight = 300f;
 
+    void Start()
+    {
+        LoadChart(currentAssetId);
+    }
+    public void LoadChart(string assetId)
+    {
+        if (marketDatabase == null)
+        {
+            Debug.LogWarning("MarketDataBase가 연동되지 않았습니다");
+            return;
+        }
+
+        List<CandleData> candles = marketDatabase.GetCandlesByAsset(assetId);
+        if (candles == null || candles.Count == 0)
+        {
+            Debug.LogWarning($"{assetId}에 해당하는 캔들 데이터가 존재하지 않습니다");
+            return;
+        }
+
+        DrawChart(candles);
+    }
     public void DrawChart(List<CandleData> data)
     {
         foreach (Transform child in candleContainer)
