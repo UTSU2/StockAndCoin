@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Experimental.Rendering;
 using UnityEngine;
 
 namespace Data
@@ -35,6 +35,33 @@ namespace Data
 
             return assets
                 .Where(a => marketEvent.impacts.Any(i => i.assetId == a.id))
+                .ToList();
+        }
+
+        public List<MarketEventData> GetEventsWithinDays(GameDate currentDate, int days)
+        {
+            DateTime current = new DateTime(
+                currentDate.year,
+                currentDate.month,
+                currentDate.day
+            );
+
+            DateTime endDate = current.AddDays(days);
+
+            return events
+                .Where(e =>
+                {
+                    if (e.date == null)
+                        return false;
+
+                    DateTime eventDate = new DateTime(
+                        e.date.year,
+                        e.date.month,
+                        e.date.day
+                    );
+
+                    return eventDate >= current && eventDate <= endDate;
+                })
                 .ToList();
         }
     }

@@ -18,6 +18,31 @@ namespace Data
         News,             // 일반 뉴스
         Custom
     }
+    public enum InfoGrade
+    {
+        Low,
+        Normal,
+        High,
+        Premium,
+        Insider
+    }
+
+    public enum PlayerInfoRank
+    {
+        Beginner,
+        Normal,
+        Expert,
+        VIP,
+        Legend
+    }
+
+    [System.Serializable]
+    public class GameDate
+    {
+        public int year;
+        public int month;
+        public int day;
+    }
 
     [System.Serializable]
     public class AssetData
@@ -44,7 +69,7 @@ namespace Data
         public EventType eventType;
         public string title;
         public string description;
-        public string date;
+        public GameDate date;
     }
 
     [System.Serializable]
@@ -58,5 +83,31 @@ namespace Data
         public float low;
         public float close;
         public float volume;
+    }
+
+    [System.Serializable]
+    public class InformantOffer
+    {
+        public string offerId;
+
+        // 내부적으로만 사용, UI에는 표시하지 않음
+        public string eventId;
+
+        public InfoGrade infoGrade;
+        public int price;
+
+        public bool purchased;
+    }
+    [System.Serializable]
+    public class PurchasedInfo
+    {
+        public string eventId;
+
+        public InfoGrade infoGrade;
+        public PlayerInfoRank playerRank;
+
+        public string revealedText;
+
+        public float accuracy;
     }
 }
