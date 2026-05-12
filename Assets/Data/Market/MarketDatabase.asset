@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bc4a0efc6439584a898b7815a55acc2, type: 3}
   m_Name: MarketDatabase
   m_EditorClassIdentifier: Assembly-CSharp::Data.MarketDatabase
-  assets: []
+  assets:
+  - id: 
+    name: 
+    marketType: 0
+    symbol: 
+    basePrice: 0
   events: []
-  candles: []
+  candleCharts: []

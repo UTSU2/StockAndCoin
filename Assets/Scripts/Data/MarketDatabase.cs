@@ -10,13 +10,17 @@ namespace Data
     {
         public List<AssetData> assets = new();
         public List<MarketEventData> events = new();
-        public List<CandleData> candles = new();
+        public List<CandleChartData> candleCharts = new();
 
         public List<CandleData> GetCandlesByAsset(string assetId)
         {
-            return candles
-                .Where(c => c.assetId == assetId)
-                .ToList();
+            CandleChartData chart =
+                candleCharts.FirstOrDefault(c => c.assetId == assetId);
+
+            if (chart == null)
+                return new List<CandleData>();
+
+            return chart.candles;
         }
 
         public List<MarketEventData> GetEventsByAsset(string assetId)

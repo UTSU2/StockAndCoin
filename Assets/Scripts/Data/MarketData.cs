@@ -75,7 +75,6 @@ namespace Data
     [System.Serializable]
     public class CandleData
     {
-        public string assetId;
         public string date;
 
         public float open;
@@ -84,6 +83,14 @@ namespace Data
         public float close;
         public float volume;
     }
+
+    [System.Serializable]
+    public class CandleChartData
+    {
+        public string assetId;
+        public List<CandleData> candles = new();
+    }
+
 
     [System.Serializable]
     public class InformantOffer
