@@ -76,7 +76,6 @@ namespace Data
     public class CandleData
     {
         public string date;
-
         public float open;
         public float high;
         public float low;
