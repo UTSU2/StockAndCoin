@@ -859,10 +859,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ChartController
   marketDatabase: {fileID: 11400000, guid: 73c04f54b01223e4f8f57b23f6f371db, type: 2}
   currentAssetId: BTC
-  candlePrefab: {fileID: 8497398446209581184, guid: 26e6eba5471e8724cb8fd57e0056d001, type: 3}
+  bullishCandlePrefab: {fileID: 1147754836628307914, guid: 7b650d0ba42a93244a38a4e45ed82a3b, type: 3}
+  bearishCandlePrefab: {fileID: 1291584713742327396, guid: 2f66d12c7734f6342ac501ee4e2868ea, type: 3}
   candleContainer: {fileID: 901142403}
-  bullishSprite: {fileID: 7482667652216324306, guid: efc3f79512519ad4a85e1459ca65751c, type: 3}
-  bearishSprite: {fileID: 7482667652216324306, guid: efc3f79512519ad4a85e1459ca65751c, type: 3}
   candleWidth: 12
   candleGap: 4
   chartHeight: 300

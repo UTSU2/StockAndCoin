@@ -11,10 +11,9 @@ public class ChartController : MonoBehaviour
     public string currentAssetId = "BTC"; //  chart 가 열릴 때 마다 해당 id로 조회
 
     [Header("Candle UI")]
-    public GameObject candlePrefab;
+    public GameObject bullishCandlePrefab; //high
+    public GameObject bearishCandlePrefab; //low
     public Transform candleContainer;
-    public Sprite bullishSprite; // high
-    public Sprite bearishSprite; // low
 
     public float candleWidth = 12f;
     public float candleGap = 4f;
@@ -53,7 +52,13 @@ public class ChartController : MonoBehaviour
         {
             var candle = data[i];
 
-            GameObject obj = Instantiate(candlePrefab, candleContainer);
+            bool isBull = candle.close >= candle.open;
+
+            GameObject prefab = isBull
+                ? bullishCandlePrefab
+                : bearishCandlePrefab;
+
+            GameObject obj = Instantiate(prefab, candleContainer);
             RectTransform rect = obj.GetComponent<RectTransform>();
 
             float x = i * (candleWidth + candleGap);
@@ -69,17 +74,11 @@ public class ChartController : MonoBehaviour
 
             //body
             var body = obj.transform.Find("Body").GetComponent<RectTransform>();
-            var bodyImg = body.GetComponent<Image>();
-
             body.anchoredPosition = new Vector2(0, bodyBot);
             body.sizeDelta = new Vector2(candleWidth, bodyTop - bodyBot);
 
-            bool isBull = candle.close >= candle.open;
-            bodyImg.sprite = isBull ? bullishSprite : bearishSprite;
-
             //wick
             var wick = obj.transform.Find("Wick").GetComponent<RectTransform>();
-
             wick.anchoredPosition = new Vector2(0, lowY);
             wick.sizeDelta = new Vector2(2f, highY - lowY);
         }
