@@ -36,7 +36,7 @@ MonoBehaviour:
       volume: 1800
     - date: 2026-05-03
       open: 105
-      high: 140
-      low: 100
-      close: 135
-      volume: 2200
+      high: 130
+      low: 110
+      close: 105
+      volume: 1800
