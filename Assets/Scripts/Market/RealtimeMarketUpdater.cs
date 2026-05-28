@@ -12,7 +12,6 @@ public class RealtimeMarketUpdater : MonoBehaviour
     [Header("Realtime Setting")]
     public bool isMarketOpen = true;
     public float updateInterval = 1f;
-    public float randomMoveRange = 0.005f;
     public float volumePerTickMin = 50f;
     public float volumePerTickMax = 300f;
 
@@ -55,7 +54,7 @@ public class RealtimeMarketUpdater : MonoBehaviour
 
             CandleData currentCandle = chart.candles[chart.candles.Count - 1];
 
-            float moveRate = Random.Range(-randomMoveRange, randomMoveRange);
+            float moveRate = Random.Range(-asset.randomMoveRange, asset.randomMoveRange);
             float newClose = currentCandle.close * (1f + moveRate);
 
             currentCandle.close = newClose;

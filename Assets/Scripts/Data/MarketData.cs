@@ -52,6 +52,7 @@ namespace Data
         public MarketType marketType;
         public string symbol;      // 차트 표시용 심볼
         public float basePrice;    // 초기 기준 가격
+        public float randomMoveRange; // 변동성
     }
 
     [System.Serializable]

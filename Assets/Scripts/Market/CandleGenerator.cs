@@ -1,6 +1,5 @@
-using UnityEngine;
-using Data;
 using System.Collections.Generic;
+using Data;
 
 
 public class CandleGenerator
