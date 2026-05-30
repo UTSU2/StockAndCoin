@@ -1,6 +1,7 @@
 using UnityEngine;
 using Data;
 using System.Collections.Generic;
+using System.Linq;
 
 public class EventManager : MonoBehaviour
 {
@@ -8,52 +9,118 @@ public class EventManager : MonoBehaviour
 
     private readonly List<MarketEventData> activeEvents = new();
 
-    public void CheckEvents(GameDate currentDate)
+    public List<MarketEventData> CheckRandomEvents()
+    {
+        UpdateCanAriseStates();
+
+        List<MarketEventData> occurredEvents = new();
+
+        List<MarketEventData> sortedEvents = database.events
+            .Where(e => !e.isArise && e.canArise)
+            .OrderByDescending(e => e.probability)
+            .ToList();
+
+        foreach (MarketEventData marketEvent in sortedEvents)
+        {
+            if (occurredEvents.Count >= 10)
+                break;
+
+            float randomValue = Random.Range(0f, 100f);
+
+            if (randomValue <= marketEvent.probability)
+            {
+                TriggerEvent(marketEvent);
+                occurredEvents.Add(marketEvent);
+            }
+        }
+
+        return occurredEvents;
+    }
+    private void UpdateCanAriseStates()
     {
         foreach (MarketEventData marketEvent in database.events)
         {
-            if (marketEvent.date == null)
-                continue;
-
-            if (IsSameDate(marketEvent.date, currentDate))
+            if (marketEvent.isArise)
             {
-                TriggerEvent(marketEvent);
+                marketEvent.canArise = false;
+                continue;
             }
+
+            marketEvent.canArise = CanEventArise(marketEvent);
         }
+    }
+    private bool CanEventArise(MarketEventData marketEvent)
+    {
+        if (marketEvent.prerequisiteEventIds.Count == 0)
+            return true;
+
+        foreach (string prerequisiteId in marketEvent.prerequisiteEventIds)
+        {
+            MarketEventData prerequisiteEvent =
+                database.events.FirstOrDefault(e => e.id == prerequisiteId);
+
+            if (prerequisiteEvent == null)
+                return false;
+
+            if (!prerequisiteEvent.isArise)
+                return false;
+        }
+
+        return true;
     }
 
     private void TriggerEvent(MarketEventData marketEvent)
     {
-        if (activeEvents.Contains(marketEvent))
+        if (marketEvent.isArise)
             return;
 
+        marketEvent.isArise = true;
         activeEvents.Add(marketEvent);
 
-        Debug.Log($"이벤트 발생: {marketEvent.id}");
+        Debug.Log($"이벤트 발생: {marketEvent.title}");
 
-        ApplyEventImpact(marketEvent);
+        ApplyAssetImpact(marketEvent);
+        ApplyEventToEventImpact(marketEvent);
     }
 
-    private void ApplyEventImpact(MarketEventData marketEvent)
+    private void ApplyAssetImpact(MarketEventData marketEvent)
     {
         if (marketEvent.impacts == null)
             return;
 
-        foreach (var impact in marketEvent.impacts)
+        foreach (EventImpactData impact in marketEvent.impacts)
         {
             AssetData asset = database.assets.Find(a => a.id == impact.assetId);
 
             if (asset == null)
                 continue;
 
-            Debug.Log($"{asset.name} 영향 적용: {impact.assetId}");
+            Debug.Log($"{asset.name} 자산 영향 적용");
         }
     }
 
-    private bool IsSameDate(GameDate a, GameDate b)
+    private void ApplyEventToEventImpact(MarketEventData marketEvent)
     {
-        return a.year == b.year
-            && a.month == b.month
-            && a.day == b.day;
+        if (marketEvent.eventImpacts == null)
+            return;
+
+        foreach (EventToEventImpactData eventImpact in marketEvent.eventImpacts)
+        {
+            MarketEventData targetEvent =
+                database.events.Find(e => e.id == eventImpact.eventId);
+
+            if (targetEvent == null)
+                continue;
+
+            if (targetEvent.isArise)
+                continue;
+
+            targetEvent.probability += eventImpact.probabilityChange;
+            targetEvent.probability = Mathf.Clamp(targetEvent.probability, 0f, 100f);
+
+            Debug.Log(
+                $"{targetEvent.title} 발생 확률 변경: {targetEvent.probability}%"
+            );
+        }
     }
 }

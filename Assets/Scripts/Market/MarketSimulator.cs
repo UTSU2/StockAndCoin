@@ -14,6 +14,7 @@ public class MarketSimulator : MonoBehaviour
 
     [Header("Date")]
     public GameDate currentDate;
+    [SerializeField] private EventManager eventManager;
 
     public void NextDay()
     {
@@ -22,6 +23,8 @@ public class MarketSimulator : MonoBehaviour
             Debug.LogWarning("MarketDatabase가 연결되지 않았습니다.");
             return;
         }
+
+        List<MarketEventData> todayEvents = eventManager.CheckRandomEvents();
 
         foreach (AssetData asset in database.assets)
         {
@@ -41,11 +44,20 @@ public class MarketSimulator : MonoBehaviour
                 continue;
             }
 
-            List<MarketEventData> todayEvents =
-                GetEventsByAssetAndDate(asset.id, currentDate);
+            List<MarketEventData> assetEvents = todayEvents
+                .Where(e =>
+                    e.impacts != null &&
+                    e.impacts.Any(i => i.assetId == asset.id)
+                )
+                .ToList();
 
             CandleData next =
-                CandleGenerator.CreateStartCandle(asset.id, prev, todayEvents, GetNextDateString());
+                CandleGenerator.CreateStartCandle(
+                    asset.id,
+                    prev,
+                    assetEvents,
+                    GetNextDateString()
+                );
 
             chartData.candles.Add(next);
         }

@@ -61,16 +61,27 @@ namespace Data
         public string assetId;
         public float impactValue;
     }
+    [System.Serializable]
+    public class EventToEventImpactData
+    {
+        public string eventId;
+        public float probabilityChange;
+    }
 
     [System.Serializable]
     public class MarketEventData
     {
         public string id;
         public List<EventImpactData> impacts = new();
+        public List<EventToEventImpactData> eventImpacts = new();
+        public List<string> prerequisiteEventIds = new();
         public EventType eventType;
         public string title;
         public string description;
-        public GameDate date;
+        public GameDate date;  // 삭제 예정
+        public bool isArise;
+        public bool canArise;
+        public float probability; // 사건이 일어날 확률
     }
 
     [System.Serializable]
