@@ -54,7 +54,7 @@ public class RealtimeMarketUpdater : MonoBehaviour
 
             CandleData currentCandle = chart.candles[chart.candles.Count - 1];
 
-            float moveRate = Random.Range(-asset.randomMoveRange, asset.randomMoveRange);
+            float moveRate = Random.Range(-asset.currentMoveRange, asset.currentMoveRange);
             float newClose = currentCandle.close * (1f + moveRate);
 
             currentCandle.close = newClose;

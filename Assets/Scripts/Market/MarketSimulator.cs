@@ -25,6 +25,7 @@ public class MarketSimulator : MonoBehaviour
         }
 
         List<MarketEventData> todayEvents = eventManager.CheckRandomEvents();
+        ApplyEventVolatility(todayEvents);
 
         foreach (AssetData asset in database.assets)
         {
@@ -67,6 +68,30 @@ public class MarketSimulator : MonoBehaviour
         if (chartController != null)
         {
             chartController.LoadChart(chartController.currentAssetId);
+        }
+    }
+    private void ApplyEventVolatility(List<MarketEventData> todayEvents)
+    {
+        foreach (AssetData asset in database.assets)
+        {
+            float totalVolatilityImpact = 0f;
+            foreach (MarketEventData marketEvent in todayEvents)
+            {
+                if (marketEvent.impacts == null)
+                    continue;
+
+                foreach (EventImpactData impact in marketEvent.impacts)
+                {
+                    if (impact.assetId == asset.id)
+                    {
+                        totalVolatilityImpact += Mathf.Abs(impact.volatilityImpact);
+                    }
+                }
+            }
+            if (totalVolatilityImpact > 0f)
+            {
+                asset.currentMoveRange = asset.baseMoveRange + totalVolatilityImpact;
+            }
         }
     }
 

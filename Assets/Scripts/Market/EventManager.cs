@@ -20,9 +20,10 @@ public class EventManager : MonoBehaviour
             .OrderByDescending(e => e.probability)
             .ToList();
 
+        int occurCount = Random.Range(0, 11);
         foreach (MarketEventData marketEvent in sortedEvents)
         {
-            if (occurredEvents.Count >= 10)
+            if (occurredEvents.Count >= occurCount)
                 break;
 
             float randomValue = Random.Range(0f, 100f);

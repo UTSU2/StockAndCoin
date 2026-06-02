@@ -52,14 +52,16 @@ namespace Data
         public MarketType marketType;
         public string symbol;      // 차트 표시용 심볼
         public float basePrice;    // 초기 기준 가격
-        public float randomMoveRange; // 변동성
+        public float baseMoveRange; // 기본 변동성
+        public float currentMoveRange; //현재 변동성
     }
 
     [System.Serializable]
     public class EventImpactData
     {
         public string assetId;
-        public float impactValue;
+        public float impactValue; //시가 영향
+        public float volatilityImpact; // 변동성 영향
     }
     [System.Serializable]
     public class EventToEventImpactData
