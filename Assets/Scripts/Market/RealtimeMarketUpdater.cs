@@ -10,7 +10,7 @@ public class RealtimeMarketUpdater : MonoBehaviour
     public ChartController chartController;
 
     [Header("Realtime Setting")]
-    public bool isMarketOpen = true;
+    public TimeManager timeManager;
     public float updateInterval = 1f;
     public float volumePerTickMin = 50f;
     public float volumePerTickMax = 300f;
@@ -19,10 +19,9 @@ public class RealtimeMarketUpdater : MonoBehaviour
 
     void Update()
     {
-        if (!isMarketOpen)
-            return;
-
         if (database == null)
+            return;
+        if (timeManager == null || !timeManager.IsMarketOpen)
             return;
 
         timer += Time.deltaTime;
@@ -75,15 +74,5 @@ public class RealtimeMarketUpdater : MonoBehaviour
             return;
 
         chartController.LoadChart(chartController.currentAssetId);
-    }
-
-    public void OpenMarket()
-    {
-        isMarketOpen = true;
-    }
-
-    public void CloseMarket()
-    {
-        isMarketOpen = false;
     }
 }

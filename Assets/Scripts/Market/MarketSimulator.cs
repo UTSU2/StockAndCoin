@@ -2,7 +2,6 @@ using UnityEngine;
 using Data;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 
 public class MarketSimulator : MonoBehaviour
 {
@@ -13,14 +12,29 @@ public class MarketSimulator : MonoBehaviour
     public ChartController chartController;
 
     [Header("Date")]
-    public GameDate currentDate;
+    public TimeManager timeManager;
     [SerializeField] private EventManager eventManager;
 
+    private void OnEnable()
+    {
+        if (timeManager != null)
+            timeManager.OnDayChanged += NextDay;
+    }
+    private void OnDisable()
+    {
+        if (timeManager != null)
+            timeManager.OnDayChanged -= NextDay;
+    }
     public void NextDay()
     {
         if (database == null)
         {
             Debug.LogWarning("MarketDatabase가 연결되지 않았습니다.");
+            return;
+        }
+        if (eventManager == null)
+        {
+            Debug.LogWarning("EventManager가 연결되지 않았습니다.");
             return;
         }
 
@@ -57,13 +71,11 @@ public class MarketSimulator : MonoBehaviour
                     asset.id,
                     prev,
                     assetEvents,
-                    GetNextDateString()
+                    GetCurrentDateString()
                 );
 
             chartData.candles.Add(next);
         }
-
-        AddOneDay();
 
         if (chartController != null)
         {
@@ -101,43 +113,12 @@ public class MarketSimulator : MonoBehaviour
             .FirstOrDefault(c => c.assetId == assetId);
     }
 
-    private List<MarketEventData> GetEventsByAssetAndDate(string assetId, GameDate date)
+    private string GetCurrentDateString()
     {
-        return database.events
-            .Where(e =>
-                e.date != null &&
-                e.date.year == date.year &&
-                e.date.month == date.month &&
-                e.date.day == date.day &&
-                e.impacts != null &&
-                e.impacts.Any(i => i.assetId == assetId)
-            )
-            .ToList();
+        if (timeManager == null)
+            return "";
+
+        return $"{timeManager.year:D4}-{timeManager.month:D2}-{timeManager.day:D2}";
     }
 
-    private string GetNextDateString()
-    {
-        System.DateTime current = new System.DateTime(
-            currentDate.year,
-            currentDate.month,
-            currentDate.day
-        );
-
-        return current.AddDays(1).ToString("yyyy-MM-dd");
-    }
-
-    private void AddOneDay()
-    {
-        System.DateTime current = new System.DateTime(
-            currentDate.year,
-            currentDate.month,
-            currentDate.day
-        );
-
-        current = current.AddDays(1);
-
-        currentDate.year = current.Year;
-        currentDate.month = current.Month;
-        currentDate.day = current.Day;
-    }
 }
