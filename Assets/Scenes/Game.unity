@@ -877,6 +877,7 @@ GameObject:
   - component: {fileID: 1301079316}
   - component: {fileID: 1301079315}
   - component: {fileID: 1301079317}
+  - component: {fileID: 1301079318}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -913,7 +914,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RealtimeMarketUpdater
   database: {fileID: 11400000, guid: 73c04f54b01223e4f8f57b23f6f371db, type: 2}
   chartController: {fileID: 1051709296}
-  timeManager: {fileID: 0}
+  timeManager: {fileID: 1301079317}
   updateInterval: 1
   volumePerTickMin: 50
   volumePerTickMax: 300
@@ -931,8 +932,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MarketSimulator
   database: {fileID: 11400000, guid: 73c04f54b01223e4f8f57b23f6f371db, type: 2}
   chartController: {fileID: 1051709296}
-  timeManager: {fileID: 0}
-  eventManager: {fileID: 0}
+  timeManager: {fileID: 1301079317}
+  eventManager: {fileID: 1301079318}
 --- !u!114 &1301079317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -951,6 +952,19 @@ MonoBehaviour:
   hour: 9
   minute: 0
   realSecondsPerGameMinute: 1
+--- !u!114 &1301079318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1301079313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad1f4c4804ea38340adf2ed01f0dbd69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EventManager
+  database: {fileID: 11400000, guid: 73c04f54b01223e4f8f57b23f6f371db, type: 2}
 --- !u!1 &1547359065
 GameObject:
   m_ObjectHideFlags: 0

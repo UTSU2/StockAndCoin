@@ -19,6 +19,10 @@ public class TimeManager : MonoBehaviour
     public event Action<int, int> OnTimeChanged;
     public bool IsMarketOpen { get; private set; }
 
+    private void Start()
+    {
+        CheckMarketState();
+    }
     private void Update()
     {
         timer += Time.deltaTime;

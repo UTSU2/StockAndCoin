@@ -18,6 +18,8 @@ MonoBehaviour:
     marketType: 0
     symbol: b
     basePrice: 2000
+    baseMoveRange: 0.05
+    currentMoveRange: 0.05
   events: []
   candleCharts:
   - assetId: BTC
