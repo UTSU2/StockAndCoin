@@ -5,11 +5,12 @@ using System.Linq;
 public class PlayerManager : MonoBehaviour
 {
     private PlayerData playerData;
+    public float Cash => playerData.cash;
+    public PlayerInfoRank InfoRank => playerData.infoRank;
     private void Awake()
     {
         playerData = new PlayerData(); //저장 시스템 만들고 수정 예정
     }
-
     public bool BuyAsset(string assetId, float price, int quantity)
     {
         float totalPrice = price * quantity;
@@ -45,7 +46,7 @@ public class PlayerManager : MonoBehaviour
             float newTotalPrice = currentTotalPrice + totalPrice;
 
             holding.quantity += quantity;
-            holding.averagePrice = newTotalPrice / quantity;
+            holding.averagePrice = newTotalPrice / holding.quantity;
         }
 
         return true;
@@ -77,5 +78,13 @@ public class PlayerManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    public int GetHoldingQuantity(string assetId)
+    {
+        PlayerHolding holding =
+            playerData.holdings.FirstOrDefault(h => h.assetId == assetId);
+
+        return holding?.quantity ?? 0;
     }
 }
