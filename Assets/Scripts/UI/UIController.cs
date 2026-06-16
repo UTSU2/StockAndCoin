@@ -14,10 +14,15 @@ public class UIController : MonoBehaviour
     public Button buyBtn;
     public Button sellBtn;
     public Button selectBtn;
+    [Header("Panel")]
+    public GameObject stockPanel;
+    public GameObject coinPanel;
     [Header("Manager")]
     public TimeManager timeManager;
     public PlayerManager playerManager;
-    public ChartController chartController;
+    public ChartController chartController; //current
+    public ChartController stockChartController;
+    public ChartController coinChartController;
     public ChartManager chartManager;
 
     private void Start()
@@ -47,21 +52,56 @@ public class UIController : MonoBehaviour
     {
         rankText.text = playerManager.InfoRank.ToString();
     }
+    public void CheckCurrentController()
+    {
+        chartController = coinPanel.activeSelf
+            ? coinChartController
+            : stockChartController;
+    }
     private void OnBuyButtonClicked()
     {
         Debug.Log("매수 버튼 클릭");
-        playerManager.BuyAsset(chartController.currentAssetId, chartManager.GetPrice(), chartManager.GetQuantity());
-
+        CheckCurrentController();
+        bool success = playerManager.BuyAsset(chartController.currentAssetId, chartManager.GetPrice(), chartManager.GetQuantity());
+        if (success)
+            RefreshUI();
     }
 
     private void OnSellButtonClicked()
     {
         Debug.Log("매도 버튼 클릭");
-        playerManager.SellAsset(chartController.currentAssetId, chartManager.GetPrice(), chartManager.GetQuantity());
+        CheckCurrentController();
+        bool success = playerManager.SellAsset(chartController.currentAssetId, chartManager.GetPrice(), chartManager.GetQuantity());
+        if (success)
+            RefreshUI();
     }
 
     private void OnSelectButtonClicked()
     {
         Debug.Log("선택 버튼 클릭");
+    }
+
+    public void OpenStockPanel()
+    {
+        stockPanel.SetActive(true);
+        coinPanel.SetActive(false);
+
+        chartController = stockChartController;
+    }
+
+    public void OpenCoinPanel()
+    {
+        stockPanel.SetActive(false);
+        coinPanel.SetActive(true);
+
+        chartController = coinChartController;
+    }
+
+    public void ClosePanel()
+    {
+        stockPanel.SetActive(false);
+        coinPanel.SetActive(false);
+
+        chartController = null;
     }
 }
