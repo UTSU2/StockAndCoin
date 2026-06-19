@@ -11,6 +11,8 @@ public class UIController : MonoBehaviour
     [Header("Button")]
     public Button stockPanelOpenBtn;
     public Button coinPanelOpenBtn;
+    public Button stockChartOpenBtn;
+    public Button coinChartOpenBtn;
     public Button buyBtn;
     public Button sellBtn;
     public Button selectBtn;

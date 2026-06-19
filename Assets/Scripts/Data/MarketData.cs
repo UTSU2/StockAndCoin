@@ -35,6 +35,13 @@ namespace Data
         VIP,
         Legend
     }
+    public enum AssetStateAction
+    {
+        None,
+        List,
+        Delist,
+        Reveal
+    }
 
     [System.Serializable]
     public class GameDate
@@ -54,6 +61,8 @@ namespace Data
         public float basePrice;    // 초기 기준 가격
         public float baseMoveRange; // 기본 변동성
         public float currentMoveRange; //현재 변동성
+        public bool isListed;  // 거래 가능 여부
+        public bool isAvailable; // 시장 등장 여부
     }
 
     [System.Serializable]
@@ -62,6 +71,7 @@ namespace Data
         public string assetId;
         public float impactValue; //시가 영향
         public float volatilityImpact; // 변동성 영향
+        public AssetStateAction stateAction; //상태 변화
     }
     [System.Serializable]
     public class EventToEventImpactData

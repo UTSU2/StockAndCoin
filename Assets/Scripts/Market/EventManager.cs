@@ -96,6 +96,19 @@ public class EventManager : MonoBehaviour
             if (asset == null)
                 continue;
 
+            switch (impact.stateAction)
+            {
+                case AssetStateAction.List:
+                    asset.isAvailable = true;
+                    asset.isListed = true;
+                    break;
+                case AssetStateAction.Delist:
+                    asset.isListed = false;
+                    break;
+                case AssetStateAction.Reveal:
+                    asset.isAvailable = true;
+                    break;
+            }
             Debug.Log($"{asset.name} 자산 영향 적용");
         }
     }
