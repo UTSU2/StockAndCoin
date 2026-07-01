@@ -25,15 +25,17 @@ public class UIController : MonoBehaviour
     public ChartController chartController; //current
     public ChartController stockChartController;
     public ChartController coinChartController;
-    public ChartManager chartManager;
+    public ChartManager chartManager;   //current
+    public ChartManager stockChartManager;
+    public ChartManager coinChartManager;
 
     private void Start()
     {
         RefreshUI();
 
-        buyBtn.onClick.AddListener(OnBuyButtonClicked);
-        sellBtn.onClick.AddListener(OnSellButtonClicked);
-        selectBtn.onClick.AddListener(OnSelectButtonClicked);
+        //buyBtn.onClick.AddListener(OnBuyButtonClicked);
+        //sellBtn.onClick.AddListener(OnSellButtonClicked);
+        //selectBtn.onClick.AddListener(OnSelectButtonClicked);
     }
     public void RefreshUI()
     {
@@ -48,7 +50,7 @@ public class UIController : MonoBehaviour
     }
     public void UpdateCash()
     {
-        cashText.text = $"{playerManager.Cash:N0}원";
+        cashText.text = $"{playerManager.Cash:N0} Soul";
     }
     public void UpdateRank()
     {
@@ -59,6 +61,9 @@ public class UIController : MonoBehaviour
         chartController = coinPanel.activeSelf
             ? coinChartController
             : stockChartController;
+        chartManager = coinPanel.activeSelf
+            ? coinChartManager
+            : stockChartManager;
     }
     private void OnBuyButtonClicked()
     {
@@ -89,6 +94,7 @@ public class UIController : MonoBehaviour
         coinPanel.SetActive(false);
 
         chartController = stockChartController;
+        chartManager = stockChartManager;
     }
 
     public void OpenCoinPanel()
@@ -97,6 +103,7 @@ public class UIController : MonoBehaviour
         coinPanel.SetActive(true);
 
         chartController = coinChartController;
+        chartManager = coinChartManager;
     }
 
     public void ClosePanel()
@@ -105,5 +112,6 @@ public class UIController : MonoBehaviour
         coinPanel.SetActive(false);
 
         chartController = null;
+        chartManager = null;
     }
 }
