@@ -25,6 +25,11 @@ public class ChartController : MonoBehaviour
     }
     public void SelectAsset(string assetId)
     {
+        if (string.IsNullOrEmpty(assetId))
+        {
+            Debug.LogWarning("선택된 ID가 없습니다");
+            return;
+        }
         currentAssetId = assetId;
         LoadChart(assetId);
     }
@@ -45,8 +50,18 @@ public class ChartController : MonoBehaviour
 
         DrawChart(candles);
     }
+    public void RefreshChart()
+    {
+        if (string.IsNullOrEmpty(currentAssetId))
+            return;
+
+        LoadChart(currentAssetId);
+    }
+
     public void DrawChart(List<CandleData> data)
     {
+        ClearChart();
+
         foreach (Transform child in candleContainer)
             Destroy(child.gameObject);
 
@@ -87,6 +102,11 @@ public class ChartController : MonoBehaviour
             wick.anchoredPosition = new Vector2(0, lowY);
             wick.sizeDelta = new Vector2(2f, highY - lowY);
         }
+    }
+    private void ClearChart()
+    {
+        foreach (Transform child in candleContainer)
+            Destroy(child.gameObject);
     }
 
     float Normalize(float price, float min, float max)

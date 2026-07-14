@@ -20,8 +20,50 @@ MonoBehaviour:
     basePrice: 2000
     baseMoveRange: 0.05
     currentMoveRange: 0.05
+    isListed: 0
+    isAvailable: 0
   events: []
   candleCharts:
+  - assetId: BTC
+    candles:
+    - date: 2026-05-01
+      open: 100
+      high: 120
+      low: 90
+      close: 115
+      volume: 1500
+    - date: 2026-05-02
+      open: 115
+      high: 130
+      low: 110
+      close: 105
+      volume: 1800
+    - date: 2026-05-03
+      open: 105
+      high: 130
+      low: 110
+      close: 105
+      volume: 1800
+  - assetId: Michael Industry
+    candles:
+    - date: 2026-05-01
+      open: 100
+      high: 120
+      low: 90
+      close: 115
+      volume: 1500
+    - date: 2026-05-02
+      open: 115
+      high: 130
+      low: 110
+      close: 105
+      volume: 1800
+    - date: 2026-05-03
+      open: 105
+      high: 130
+      low: 110
+      close: 105
+      volume: 1800
   - assetId: BTC
     candles:
     - date: 2026-05-01
