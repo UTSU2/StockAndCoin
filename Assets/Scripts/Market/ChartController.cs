@@ -21,7 +21,7 @@ public class ChartController : MonoBehaviour
 
     void Start()
     {
-        SelectAsset(currentAssetId);
+        //SelectAsset(currentAssetId);
     }
     public void SelectAsset(string assetId)
     {

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3459252097562281466}
   - component: {fileID: 7781169773344617407}
   - component: {fileID: 599441055005566675}
+  - component: {fileID: 3267640696136713871}
   m_Layer: 5
   m_Name: ListItemPrefab
   m_TagString: Untagged
@@ -94,6 +95,26 @@ MonoBehaviour:
   nameText: {fileID: 1236520861634327295}
   symbolText: {fileID: 4594043598343283716}
   selectButton: {fileID: 2072254936276874528}
+--- !u!114 &3267640696136713871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 52900150470330305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: 80
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &883471409302385594
 GameObject:
   m_ObjectHideFlags: 0

@@ -22,6 +22,24 @@ MonoBehaviour:
     currentMoveRange: 0.05
     isListed: 0
     isAvailable: 0
+  - id: Michael Industry
+    name: Michael
+    marketType: 0
+    symbol: M
+    basePrice: 2000
+    baseMoveRange: 0.05
+    currentMoveRange: 0.05
+    isListed: 0
+    isAvailable: 0
+  - id: Gabriel Company
+    name: Gabriel
+    marketType: 0
+    symbol: G
+    basePrice: 2000
+    baseMoveRange: 0.05
+    currentMoveRange: 0.05
+    isListed: 0
+    isAvailable: 0
   events: []
   candleCharts:
   - assetId: BTC
@@ -40,10 +58,10 @@ MonoBehaviour:
       volume: 1800
     - date: 2026-05-03
       open: 105
-      high: 130
-      low: 110
-      close: 105
-      volume: 1800
+      high: 153.89029
+      low: 88.50095
+      close: 131.69397
+      volume: 19993.95
   - assetId: Michael Industry
     candles:
     - date: 2026-05-01
@@ -64,7 +82,7 @@ MonoBehaviour:
       low: 110
       close: 105
       volume: 1800
-  - assetId: BTC
+  - assetId: Gabriel Company
     candles:
     - date: 2026-05-01
       open: 100
