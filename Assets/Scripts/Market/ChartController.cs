@@ -31,7 +31,7 @@ public class ChartController : MonoBehaviour
             return;
         }
         currentAssetId = assetId;
-        LoadChart(assetId);
+        //LoadChart(assetId);
     }
     public void LoadChart(string assetId)
     {

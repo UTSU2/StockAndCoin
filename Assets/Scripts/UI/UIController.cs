@@ -16,9 +16,15 @@ public class UIController : MonoBehaviour
     public Button buyBtn;
     public Button sellBtn;
     public Button selectBtn;
+    public Button closeBtn;
     [Header("Panel")]
+    public GameObject chartPanel;
     public GameObject stockPanel;
+    public GameObject stockListPanel;
+    public GameObject stockChartPanel;
     public GameObject coinPanel;
+    public GameObject coinListPanel;
+    public GameObject coinChartPanel;
     [Header("Manager")]
     public TimeManager timeManager;
     public PlayerManager playerManager;
@@ -33,6 +39,7 @@ public class UIController : MonoBehaviour
     {
         RefreshUI();
 
+        OpenStockPanel(); //임시
         //buyBtn.onClick.AddListener(OnBuyButtonClicked);
         //sellBtn.onClick.AddListener(OnSellButtonClicked);
         //selectBtn.onClick.AddListener(OnSelectButtonClicked);
@@ -86,6 +93,16 @@ public class UIController : MonoBehaviour
     private void OnSelectButtonClicked()
     {
         Debug.Log("선택 버튼 클릭");
+        chartPanel.SetActive(true);
+        chartController.LoadChart(chartController.currentAssetId);
+    }
+    private void OnCloseButtonClicked()
+    {
+        Debug.Log("닫기 버튼 클릭");
+        if (chartPanel.activeSelf)
+        {
+            chartPanel.SetActive(false);
+        }
     }
 
     public void OpenStockPanel()
@@ -95,6 +112,14 @@ public class UIController : MonoBehaviour
 
         chartController = stockChartController;
         chartManager = stockChartManager;
+        chartPanel = stockChartPanel;
+        buyBtn = stockChartManager.GetbuyButton();
+        sellBtn = stockChartManager.GetsellButton();
+        selectBtn = stockChartManager.GetselectButton();
+        closeBtn = stockChartManager.GetcloseButton();
+
+        selectBtn.onClick.AddListener(OnSelectButtonClicked);
+        closeBtn.onClick.AddListener(OnCloseButtonClicked);
     }
 
     public void OpenCoinPanel()
@@ -104,6 +129,14 @@ public class UIController : MonoBehaviour
 
         chartController = coinChartController;
         chartManager = coinChartManager;
+        chartPanel = coinChartPanel;
+        buyBtn = coinChartManager.GetbuyButton();
+        sellBtn = coinChartManager.GetsellButton();
+        selectBtn = coinChartManager.GetselectButton();
+        closeBtn = coinChartManager.GetcloseButton();
+
+        selectBtn.onClick.AddListener(OnSelectButtonClicked);
+        closeBtn.onClick.AddListener(OnCloseButtonClicked);
     }
 
     public void ClosePanel()
