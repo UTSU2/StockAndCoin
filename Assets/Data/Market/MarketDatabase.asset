@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bc4a0efc6439584a898b7815a55acc2, type: 3}
+  m_Name: MarketDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::Data.MarketDatabase
+  assets:
+  - id: BTC
+    name: btc
+    marketType: 0
+    symbol: b
+    basePrice: 2000
+    baseMoveRange: 0.05
+    currentMoveRange: 0.05
+    isListed: 0
+    isAvailable: 0
+  - id: Michael Industry
+    name: Michael
+    marketType: 0
+    symbol: M
+    basePrice: 2000
+    baseMoveRange: 0.05
+    currentMoveRange: 0.05
+    isListed: 0
+    isAvailable: 0
+  - id: Gabriel Company
+    name: Gabriel
+    marketType: 0
+    symbol: G
+    basePrice: 2000
+    baseMoveRange: 0.05
+    currentMoveRange: 0.05
+    isListed: 0
+    isAvailable: 0
+  events: []
+  candleCharts:
+  - assetId: BTC
+    candles:
+    - date: 2026-05-01
+      open: 100
+      high: 120
+      low: 90
+      close: 115
+      volume: 1500
+    - date: 2026-05-02
+      open: 115
+      high: 130
+      low: 110
+      close: 105
+      volume: 1800
+    - date: 2026-05-03
+      open: 105
+      high: 153.89029
+      low: 88.50095
+      close: 131.69397
+      volume: 19993.95
+  - assetId: Michael Industry
+    candles:
+    - date: 2026-05-01
+      open: 100
+      high: 120
+      low: 90
+      close: 115
+      volume: 1500
+    - date: 2026-05-02
+      open: 115
+      high: 130
+      low: 110
+      close: 105
+      volume: 1800
+    - date: 2026-05-03
+      open: 105
+      high: 130
+      low: 110
+      close: 105
+      volume: 1800
+  - assetId: Gabriel Company
+    candles:
+    - date: 2026-05-01
+      open: 100
+      high: 120
+      low: 90
+      close: 115
+      volume: 1500
+    - date: 2026-05-02
+      open: 115
+      high: 130
+      low: 110
+      close: 105
+      volume: 1800
+    - date: 2026-05-03
+      open: 105
+      high: 130
+      low: 110
+      close: 105
+      volume: 1800
