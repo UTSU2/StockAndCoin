@@ -66,6 +66,33 @@ namespace Data
     }
 
     [System.Serializable]
+    public class OrderBookLevel
+    {
+        public float price;
+        public int quantity;
+
+        public OrderBookLevel(float price, int quantity)
+        {
+            this.price = price;
+            this.quantity = quantity;
+        }
+    }
+
+    [System.Serializable]
+    public class OrderBookData
+    {
+        public string assetId;
+
+        public List<OrderBookLevel> buyOrders = new();
+        public List<OrderBookLevel> sellOrders = new();
+
+        public OrderBookData(string assetId)
+        {
+            this.assetId = assetId;
+        }
+    }
+
+    [System.Serializable]
     public class EventImpactData
     {
         public string assetId;
