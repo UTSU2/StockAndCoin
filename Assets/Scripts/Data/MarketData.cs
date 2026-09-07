@@ -64,17 +64,52 @@ namespace Data
         public bool isListed;  // 거래 가능 여부
         public bool isAvailable; // 시장 등장 여부
     }
+    [System.Serializable]
+    public class LimitOrder
+    {
+        public string assetId;
+        public float price;
+        public int quantity;
+        public bool isBuy;
+        public bool isPlayerOrder;
+
+        public LimitOrder(
+            string assetId,
+            float price,
+            int quantity,
+            bool isBuy,
+            bool isPlayerOrder)
+        {
+            this.assetId = assetId;
+            this.price = price;
+            this.quantity = quantity;
+            this.isBuy = isBuy;
+            this.isPlayerOrder = isPlayerOrder;
+        }
+    }
 
     [System.Serializable]
     public class OrderBookLevel
     {
         public float price;
-        public int quantity;
+        public List<LimitOrder> orders = new();
 
-        public OrderBookLevel(float price, int quantity)
+        public int TotalQuantity
+        {
+            get
+            {
+                int total = 0;
+
+                foreach (LimitOrder order in orders)
+                    total += order.quantity;
+
+                return total;
+            }
+        }
+
+        public OrderBookLevel(float price)
         {
             this.price = price;
-            this.quantity = quantity;
         }
     }
 

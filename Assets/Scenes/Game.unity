@@ -3780,6 +3780,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1071937705}
   m_CullTransparentMesh: 1
+--- !u!1 &1072113873
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1072113875}
+  - component: {fileID: 1072113874}
+  m_Layer: 0
+  m_Name: PlayerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1072113874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072113873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd6a2610ecf6a154296344b995d68dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
+--- !u!4 &1072113875
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072113873}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1384.2697, y: 422.57346, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1135303934
 GameObject:
   m_ObjectHideFlags: 0
@@ -4275,8 +4319,9 @@ GameObject:
   - component: {fileID: 1301079317}
   - component: {fileID: 1301079318}
   - component: {fileID: 1301079320}
-  - component: {fileID: 1301079319}
   - component: {fileID: 1301079321}
+  - component: {fileID: 1301079322}
+  - component: {fileID: 1301079323}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -4364,18 +4409,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EventManager
   database: {fileID: 11400000, guid: 73c04f54b01223e4f8f57b23f6f371db, type: 2}
---- !u!114 &1301079319
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1301079313}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd6a2610ecf6a154296344b995d68dfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
 --- !u!114 &1301079320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4407,7 +4440,8 @@ MonoBehaviour:
   coinListPanel: {fileID: 633711365}
   coinChartPanel: {fileID: 1430982808}
   timeManager: {fileID: 1301079317}
-  playerManager: {fileID: 1301079319}
+  playerManager: {fileID: 1072113874}
+  tradeManager: {fileID: 0}
   chartController: {fileID: 0}
   stockChartController: {fileID: 1051709296}
   coinChartController: {fileID: 1430982812}
@@ -4427,9 +4461,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   timeManager: {fileID: 1301079317}
-  playerManager: {fileID: 1301079319}
+  playerManager: {fileID: 1072113874}
   marketSimulator: {fileID: 1301079316}
   uiController: {fileID: 1301079320}
+--- !u!114 &1301079322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1301079313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb72554516e7630408e308084f58ea18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OrderBookManager
+  database: {fileID: 11400000, guid: 73c04f54b01223e4f8f57b23f6f371db, type: 2}
+  orderBookLevelCount: 10
+  minQuantity: 10
+  maxQuantity: 100
+--- !u!114 &1301079323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1301079313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c7f722840f0824e8431470caa1fea1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TradeManager
+  orderBookManager: {fileID: 1301079322}
+  playerManager: {fileID: 1072113874}
 --- !u!1 &1430982808
 GameObject:
   m_ObjectHideFlags: 0
@@ -5969,3 +6033,4 @@ SceneRoots:
   - {fileID: 1547359069}
   - {fileID: 1812729314}
   - {fileID: 1301079314}
+  - {fileID: 1072113875}

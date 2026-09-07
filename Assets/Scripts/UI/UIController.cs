@@ -28,6 +28,7 @@ public class UIController : MonoBehaviour
     [Header("Manager")]
     public TimeManager timeManager;
     public PlayerManager playerManager;
+    public TradeManager tradeManager;
     public ChartController chartController; //current
     public ChartController stockChartController;
     public ChartController coinChartController;
@@ -76,7 +77,7 @@ public class UIController : MonoBehaviour
     {
         Debug.Log("매수 버튼 클릭");
         CheckCurrentController();
-        bool success = playerManager.BuyAsset(chartController.currentAssetId, chartManager.GetPrice(), chartManager.GetQuantity());
+        bool success = tradeManager.LimitBuy(chartController.currentAssetId, chartManager.GetPrice(), chartManager.GetQuantity());
         if (success)
             RefreshUI();
     }
@@ -85,7 +86,7 @@ public class UIController : MonoBehaviour
     {
         Debug.Log("매도 버튼 클릭");
         CheckCurrentController();
-        bool success = playerManager.SellAsset(chartController.currentAssetId, chartManager.GetPrice(), chartManager.GetQuantity());
+        bool success = tradeManager.LimitSell(chartController.currentAssetId, chartManager.GetPrice(), chartManager.GetQuantity());
         if (success)
             RefreshUI();
     }
@@ -113,10 +114,10 @@ public class UIController : MonoBehaviour
         chartController = stockChartController;
         chartManager = stockChartManager;
         chartPanel = stockChartPanel;
-        buyBtn = stockChartManager.GetbuyButton();
-        sellBtn = stockChartManager.GetsellButton();
-        selectBtn = stockChartManager.GetselectButton();
-        closeBtn = stockChartManager.GetcloseButton();
+        buyBtn = stockChartManager.BuyButton;
+        sellBtn = stockChartManager.SellButton;
+        selectBtn = stockChartManager.SelectButton;
+        closeBtn = stockChartManager.CloseButton;
 
         selectBtn.onClick.AddListener(OnSelectButtonClicked);
         closeBtn.onClick.AddListener(OnCloseButtonClicked);
@@ -130,10 +131,10 @@ public class UIController : MonoBehaviour
         chartController = coinChartController;
         chartManager = coinChartManager;
         chartPanel = coinChartPanel;
-        buyBtn = coinChartManager.GetbuyButton();
-        sellBtn = coinChartManager.GetsellButton();
-        selectBtn = coinChartManager.GetselectButton();
-        closeBtn = coinChartManager.GetcloseButton();
+        buyBtn = coinChartManager.BuyButton;
+        sellBtn = coinChartManager.SellButton;
+        selectBtn = coinChartManager.SelectButton;
+        closeBtn = coinChartManager.CloseButton;
 
         selectBtn.onClick.AddListener(OnSelectButtonClicked);
         closeBtn.onClick.AddListener(OnCloseButtonClicked);

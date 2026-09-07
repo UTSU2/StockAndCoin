@@ -31,6 +31,12 @@ public class OrderBookManager : MonoBehaviour
                 CreateOrderBook(asset.id, currentPrice);
 
             orderBooks.Add(asset.id, orderBook);
+
+            Debug.Log(
+                $"{asset.id} 호가 생성 완료 " +
+                $"/ 매수 {orderBook.buyOrders.Count}개 " +
+                $"/ 매도 {orderBook.sellOrders.Count}개"
+            );
         }
     }
 
@@ -56,19 +62,35 @@ public class OrderBookManager : MonoBehaviour
             int sellQuantity =
                 Random.Range(minQuantity, maxQuantity + 1);
 
-            orderBook.buyOrders.Add(
-                new OrderBookLevel(
+            OrderBookLevel buyLevel =
+                new OrderBookLevel(buyPrice);
+
+            buyLevel.orders.Add(
+                new LimitOrder(
+                    assetId,
                     buyPrice,
-                    buyQuantity
+                    buyQuantity,
+                    true,
+                    false
                 )
             );
 
-            orderBook.sellOrders.Add(
-                new OrderBookLevel(
+            orderBook.buyOrders.Add(buyLevel);
+
+            OrderBookLevel sellLevel =
+                new OrderBookLevel(sellPrice);
+
+            sellLevel.orders.Add(
+                new LimitOrder(
+                    assetId,
                     sellPrice,
-                    sellQuantity
+                    sellQuantity,
+                    false,
+                    false
                 )
             );
+
+            orderBook.sellOrders.Add(sellLevel);
         }
 
         return orderBook;
@@ -88,9 +110,16 @@ public class OrderBookManager : MonoBehaviour
 
     private float GetCurrentPrice(AssetData asset)
     {
-        // 우선 초기 버전에서는 basePrice 사용
-        // 이후 MarketDatabase의 마지막 CandleData.close로 변경 예정
-        return asset.basePrice;
+        List<CandleData> candles =
+            database.GetCandlesByAsset(asset.id);
+
+        if (candles == null || candles.Count == 0)
+            return asset.basePrice;
+
+        CandleData latestCandle =
+            candles[candles.Count - 1];
+
+        return latestCandle.close;
     }
 
     private float GetTickSize(float price)
