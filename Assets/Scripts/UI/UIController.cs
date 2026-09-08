@@ -19,12 +19,15 @@ public class UIController : MonoBehaviour
     public Button closeBtn;
     [Header("Panel")]
     public GameObject chartPanel;
+    public GameObject infoPanel;
     public GameObject stockPanel;
     public GameObject stockListPanel;
     public GameObject stockChartPanel;
+    public GameObject stockInfoPanel;
     public GameObject coinPanel;
     public GameObject coinListPanel;
     public GameObject coinChartPanel;
+    public GameObject coinInfoPanel;
     [Header("Manager")]
     public TimeManager timeManager;
     public PlayerManager playerManager;
@@ -41,8 +44,8 @@ public class UIController : MonoBehaviour
         RefreshUI();
 
         OpenStockPanel(); //임시
-        //buyBtn.onClick.AddListener(OnBuyButtonClicked);
-        //sellBtn.onClick.AddListener(OnSellButtonClicked);
+        buyBtn.onClick.AddListener(OnBuyButtonClicked);
+        sellBtn.onClick.AddListener(OnSellButtonClicked);
         //selectBtn.onClick.AddListener(OnSelectButtonClicked);
     }
     public void RefreshUI()
@@ -95,6 +98,7 @@ public class UIController : MonoBehaviour
     {
         Debug.Log("선택 버튼 클릭");
         chartPanel.SetActive(true);
+        infoPanel.SetActive(true);
         chartController.LoadChart(chartController.currentAssetId);
     }
     private void OnCloseButtonClicked()
@@ -103,6 +107,7 @@ public class UIController : MonoBehaviour
         if (chartPanel.activeSelf)
         {
             chartPanel.SetActive(false);
+            infoPanel.SetActive(false);
         }
     }
 
@@ -114,6 +119,7 @@ public class UIController : MonoBehaviour
         chartController = stockChartController;
         chartManager = stockChartManager;
         chartPanel = stockChartPanel;
+        infoPanel = stockInfoPanel;
         buyBtn = stockChartManager.BuyButton;
         sellBtn = stockChartManager.SellButton;
         selectBtn = stockChartManager.SelectButton;
@@ -131,6 +137,7 @@ public class UIController : MonoBehaviour
         chartController = coinChartController;
         chartManager = coinChartManager;
         chartPanel = coinChartPanel;
+        infoPanel = coinInfoPanel;
         buyBtn = coinChartManager.BuyButton;
         sellBtn = coinChartManager.SellButton;
         selectBtn = coinChartManager.SelectButton;
@@ -144,6 +151,9 @@ public class UIController : MonoBehaviour
     {
         stockPanel.SetActive(false);
         coinPanel.SetActive(false);
+
+        stockInfoPanel.SetActive(false);
+        coinInfoPanel.SetActive(false);
 
         chartController = null;
         chartManager = null;

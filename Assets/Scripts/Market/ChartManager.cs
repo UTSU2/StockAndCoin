@@ -6,8 +6,8 @@ using System.Diagnostics.Tracing;
 public class ChartManager : MonoBehaviour
 {
     [Header("Chart data")]
-    public TMP_Text quantityText;
-    public TMP_Text priceText;
+    public TMP_InputField quantityText;
+    public TMP_InputField priceText;
     [Header("Chart UI")]
     [SerializeField] private GameObject listPanel;
     [SerializeField] private GameObject chartPanel;
