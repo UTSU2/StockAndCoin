@@ -1,6 +1,12 @@
 using UnityEngine;
 using Data;
 
+public enum AssetListType
+{
+    All,
+    Holding,
+    Favorite
+}
 public class AssetListController : MonoBehaviour
 {
     public MarketDatabase marketDatabase;
@@ -8,6 +14,9 @@ public class AssetListController : MonoBehaviour
     public AssetListItem itemPrefab;
     public Transform itemContainer;
     public ChartController chartController;
+
+    [SerializeField] private PlayerManager playerManager;
+    private AssetListType currentListType = AssetListType.All;
     private void Start()
     {
         Debug.Log($"[{name}] AssetListController Start 실행");
@@ -46,11 +55,48 @@ public class AssetListController : MonoBehaviour
                 $"자산 확인: {asset.id}, 타입: {asset.marketType}"
             );
 
-            if (asset.marketType == marketType)
+            if (asset.marketType != marketType)
+                continue;
+
+            bool shouldShow = false;
+            switch (currentListType)
             {
-                AssetListItem item = Instantiate(itemPrefab, itemContainer);
-                item.Initialize(asset, chartController);
+                case AssetListType.All:
+                    shouldShow = true;
+                    break;
+                case AssetListType.Holding:
+                    shouldShow = IsHolding(asset.id);
+                    break;
+                case AssetListType.Favorite:
+                    shouldShow = playerManager.IsFavorite(asset.id);
+                    break;
             }
+
+            if (!shouldShow) continue;
+
+            AssetListItem item = Instantiate(itemPrefab, itemContainer);
+            item.Initialize(asset, chartController);
         }
+    }
+
+    public void ShowAllAssets()
+    {
+        currentListType = AssetListType.All;
+        CreateAssetList();
+    }
+    public void ShowHoldingAssets()
+    {
+        currentListType = AssetListType.Holding;
+        CreateAssetList();
+    }
+    public void ShowFavoriteAssets()
+    {
+        currentListType = AssetListType.Favorite;
+        CreateAssetList();
+    }
+
+    private bool IsHolding(string assetId)
+    {
+        return playerManager.HasAsset(assetId);
     }
 }

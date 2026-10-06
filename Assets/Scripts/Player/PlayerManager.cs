@@ -95,4 +95,19 @@ public class PlayerManager : MonoBehaviour
 
         return holding?.quantity ?? 0;
     }
+
+    public bool HasAsset(string assetId)
+    {
+        return playerData.holdings.Exists(
+            holding =>
+                holding.assetId == assetId && holding.quantity > 0
+        );
+    }
+
+    public bool IsFavorite(string assetId)
+    {
+        return playerData.favoriteAssetIds.Exists(
+            favorite => favorite == assetId
+        );
+    }
 }

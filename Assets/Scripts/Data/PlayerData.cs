@@ -9,6 +9,7 @@ namespace Data
         public PlayerInfoRank infoRank = PlayerInfoRank.Beginner;
         public List<PlayerHolding> holdings = new();
         public List<PurchasedInfo> purchasedInfos = new();
+        public List<string> favoriteAssetIds = new();
     }
 
     [System.Serializable]
