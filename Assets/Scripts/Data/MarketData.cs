@@ -64,6 +64,68 @@ namespace Data
         public bool isListed;  // 거래 가능 여부
         public bool isAvailable; // 시장 등장 여부
     }
+    [System.Serializable]
+    public class LimitOrder
+    {
+        public string assetId;
+        public float price;
+        public int quantity;
+        public bool isBuy;
+        public bool isPlayerOrder;
+
+        public LimitOrder(
+            string assetId,
+            float price,
+            int quantity,
+            bool isBuy,
+            bool isPlayerOrder)
+        {
+            this.assetId = assetId;
+            this.price = price;
+            this.quantity = quantity;
+            this.isBuy = isBuy;
+            this.isPlayerOrder = isPlayerOrder;
+        }
+    }
+
+    [System.Serializable]
+    public class OrderBookLevel
+    {
+        public float price;
+        public List<LimitOrder> orders = new();
+
+        public int TotalQuantity
+        {
+            get
+            {
+                int total = 0;
+
+                foreach (LimitOrder order in orders)
+                    total += order.quantity;
+
+                return total;
+            }
+        }
+
+        public OrderBookLevel(float price)
+        {
+            this.price = price;
+        }
+    }
+
+    [System.Serializable]
+    public class OrderBookData
+    {
+        public string assetId;
+
+        public List<OrderBookLevel> buyOrders = new();
+        public List<OrderBookLevel> sellOrders = new();
+
+        public OrderBookData(string assetId)
+        {
+            this.assetId = assetId;
+        }
+    }
 
     [System.Serializable]
     public class EventImpactData

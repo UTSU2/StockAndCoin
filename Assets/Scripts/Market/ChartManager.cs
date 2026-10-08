@@ -6,8 +6,8 @@ using System.Diagnostics.Tracing;
 public class ChartManager : MonoBehaviour
 {
     [Header("Chart data")]
-    public TMP_Text quantityText;
-    public TMP_Text priceText;
+    public TMP_InputField quantityText;
+    public TMP_InputField priceText;
     [Header("Chart UI")]
     [SerializeField] private GameObject listPanel;
     [SerializeField] private GameObject chartPanel;
@@ -16,30 +16,13 @@ public class ChartManager : MonoBehaviour
     [SerializeField] private Button selectBtn;
     [SerializeField] private Button closeBtn;
 
-    public GameObject GetlistPanel()
-    {
-        return listPanel;
-    }
-    public GameObject GetchartPanel()
-    {
-        return chartPanel;
-    }
-    public Button GetsellButton()
-    {
-        return sellBtn;
-    }
-    public Button GetbuyButton()
-    {
-        return buyBtn;
-    }
-    public Button GetselectButton()
-    {
-        return selectBtn;
-    }
-    public Button GetcloseButton()
-    {
-        return closeBtn;
-    }
+    public GameObject ListPanel => listPanel;
+    public GameObject ChartPanel => chartPanel;
+
+    public Button SellButton => sellBtn;
+    public Button BuyButton => buyBtn;
+    public Button SelectButton => selectBtn;
+    public Button CloseButton => closeBtn;
     public int GetQuantity()
     {
         if (int.TryParse(quantityText.text, out int quantity))
