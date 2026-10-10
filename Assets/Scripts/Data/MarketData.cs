@@ -58,33 +58,53 @@ namespace Data
         public string name;        // "Apple", "Bitcoin"
         public MarketType marketType;
         public string symbol;      // 차트 표시용 심볼
+
+        public float baseBuyProbability = 50f;
+        public float basePriceDeviation = 0.02f;
+
+        public int minNpcQuantity = 10;
+        public int maxNpcQuantity = 100;
+
+        public bool isListed;
+        public bool isAvailable;
+        /*
         public float basePrice;    // 초기 기준 가격
         public float baseMoveRange; // 기본 변동성
         public float currentMoveRange; //현재 변동성
         public bool isListed;  // 거래 가능 여부
         public bool isAvailable; // 시장 등장 여부
+        */
     }
     [System.Serializable]
     public class LimitOrder
     {
+        public string orderId;
         public string assetId;
+
         public float price;
         public int quantity;
+
         public bool isBuy;
         public bool isPlayerOrder;
+
+        public long createdTime;
 
         public LimitOrder(
             string assetId,
             float price,
             int quantity,
             bool isBuy,
-            bool isPlayerOrder)
+            bool isPlayerOrder,
+            long createdTime = 0)
         {
+            orderId = System.Guid.NewGuid().ToString();
+
             this.assetId = assetId;
             this.price = price;
             this.quantity = quantity;
             this.isBuy = isBuy;
             this.isPlayerOrder = isPlayerOrder;
+            this.createdTime = createdTime;
         }
     }
 
@@ -131,9 +151,11 @@ namespace Data
     public class EventImpactData
     {
         public string assetId;
-        public float impactValue; //시가 영향
-        public float volatilityImpact; // 변동성 영향
-        public AssetStateAction stateAction; //상태 변화
+        public float buyProbabilityChange;
+        public float priceDeviationChange;
+        public float quantityMultiplier = 1f;
+
+        public AssetStateAction stateAction;
     }
     [System.Serializable]
     public class EventToEventImpactData
@@ -156,6 +178,7 @@ namespace Data
         public bool isArise;
         public bool canArise;
         public float probability; // 사건이 일어날 확률
+        public int durationDays = 1; //이벤트로 인한 영향 지속시간
     }
 
     [System.Serializable]

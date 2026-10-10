@@ -5,6 +5,23 @@ using Data;
 public class CandleGenerator
 {
     public static CandleData CreateStartCandle(
+        CandleData prev,
+        string nextDate)
+    {
+        float startPrice = prev.close;
+
+        return new CandleData
+        {
+            date = nextDate,
+            open = startPrice,
+            high = startPrice,
+            low = startPrice,
+            close = startPrice,
+            volume = 0f
+        };
+    }
+    /*
+    public static CandleData CreateStartCandle(
         string assetId,
         CandleData prev,
         List<MarketEventData> events,
@@ -36,4 +53,5 @@ public class CandleGenerator
             volume = 0f
         };
     }
+    */
 }

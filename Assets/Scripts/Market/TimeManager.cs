@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using Unity.Mathematics;
+using Data;
 
 public class TimeManager : MonoBehaviour
 {
@@ -42,13 +43,13 @@ public class TimeManager : MonoBehaviour
             minute = 0;
             hour++;
         }
-        CheckMarketState();
-
-        OnTimeChanged?.Invoke(hour, minute);
         if (hour >= 24)
         {
             NextDay();
         }
+        CheckMarketState();
+
+        OnTimeChanged?.Invoke(hour, minute);
     }
     private void NextDay()
     {
@@ -66,16 +67,17 @@ public class TimeManager : MonoBehaviour
     }
     private void CheckMarketState()
     {
-        if (hour == 9 && minute == 0)
-        {
-            IsMarketOpen = true;
+        bool shouldOpen = hour >= 9 && (hour < 15 || (hour == 15 && minute < 30));
+
+        if (IsMarketOpen == shouldOpen)
+            return;
+
+        IsMarketOpen = shouldOpen;
+
+        if (IsMarketOpen)
             OnMarketOpen?.Invoke();
-        }
-        if (hour == 15 && minute == 30)
-        {
-            IsMarketOpen = false;
+        else
             OnMarketClose?.Invoke();
-        }
     }
     public void ForceCloseMarket()
     {
@@ -89,5 +91,13 @@ public class TimeManager : MonoBehaviour
     public string GetTimeText()
     {
         return $"{hour:D2}:{minute:D2}";
+    }
+
+    public bool CanTrade(MarketType marketType)
+    {
+        if (marketType == MarketType.Coin)
+            return true;
+        else
+            return false;
     }
 }

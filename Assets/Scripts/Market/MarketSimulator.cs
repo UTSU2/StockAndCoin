@@ -6,105 +6,79 @@ using System.Linq;
 public class MarketSimulator : MonoBehaviour
 {
     [Header("Database")]
-    public MarketDatabase database;
+    [SerializeField] private MarketDatabase database;
 
     [Header("Chart")]
-    public ChartController chartController;
+    [SerializeField] private ChartController chartController;
 
-    [Header("Date")]
-    public TimeManager timeManager;
+    [Header("Time")]
+    [SerializeField] private TimeManager timeManager;
+
+    [Header("Event")]
     [SerializeField] private EventManager eventManager;
+
+    public event System.Action<List<MarketEventData>> OnMarketEventsOccurred;
 
     private void OnEnable()
     {
         if (timeManager != null)
             timeManager.OnDayChanged += NextDay;
     }
+
     private void OnDisable()
     {
         if (timeManager != null)
             timeManager.OnDayChanged -= NextDay;
     }
+
     public void NextDay()
     {
-        if (database == null)
+        if (database == null || timeManager == null)
         {
-            Debug.LogWarning("MarketDatabase가 연결되지 않았습니다.");
-            return;
-        }
-        if (eventManager == null)
-        {
-            Debug.LogWarning("EventManager가 연결되지 않았습니다.");
+            Debug.LogWarning(
+                "[MarketSimulator] Database 또는 TimeManager가 없습니다."
+            );
             return;
         }
 
-        List<MarketEventData> todayEvents = eventManager.CheckRandomEvents();
-        ApplyEventVolatility(todayEvents);
+        string currentDate = timeManager.GetDateText();
 
         foreach (AssetData asset in database.assets)
         {
+            if (!asset.isListed || !asset.isAvailable)
+                continue;
+
             CandleChartData chartData = GetCandleChart(asset.id);
 
-            if (chartData == null)
-            {
-                Debug.LogWarning($"{asset.id}의 CandleChartData가 없습니다.");
+            if (chartData == null || chartData.candles == null)
                 continue;
-            }
 
             CandleData prev = chartData.candles.LastOrDefault();
 
             if (prev == null)
-            {
-                Debug.LogWarning($"{asset.id}의 이전 캔들이 없습니다.");
                 continue;
-            }
 
-            List<MarketEventData> assetEvents = todayEvents
-                .Where(e =>
-                    e.impacts != null &&
-                    e.impacts.Any(i => i.assetId == asset.id)
-                )
-                .ToList();
+            if (prev.date == currentDate)
+                continue;
 
             CandleData next =
                 CandleGenerator.CreateStartCandle(
-                    asset.id,
                     prev,
-                    assetEvents,
-                    GetCurrentDateString()
+                    currentDate
                 );
 
             chartData.candles.Add(next);
         }
 
-        if (chartController != null)
+        if (eventManager != null)
         {
-            chartController.LoadChart(chartController.currentAssetId);
-        }
-    }
-    private void ApplyEventVolatility(List<MarketEventData> todayEvents)
-    {
-        foreach (AssetData asset in database.assets)
-        {
-            float totalVolatilityImpact = 0f;
-            foreach (MarketEventData marketEvent in todayEvents)
-            {
-                if (marketEvent.impacts == null)
-                    continue;
+            List<MarketEventData> todayEvents =
+                eventManager.CheckRandomEvents();
 
-                foreach (EventImpactData impact in marketEvent.impacts)
-                {
-                    if (impact.assetId == asset.id)
-                    {
-                        totalVolatilityImpact += Mathf.Abs(impact.volatilityImpact);
-                    }
-                }
-            }
-            if (totalVolatilityImpact > 0f)
-            {
-                asset.currentMoveRange = asset.baseMoveRange + totalVolatilityImpact;
-            }
+            OnMarketEventsOccurred?.Invoke(todayEvents);
         }
+
+        RefreshChart();
     }
 
     private CandleChartData GetCandleChart(string assetId)
@@ -113,12 +87,13 @@ public class MarketSimulator : MonoBehaviour
             .FirstOrDefault(c => c.assetId == assetId);
     }
 
-    private string GetCurrentDateString()
+    private void RefreshChart()
     {
-        if (timeManager == null)
-            return "";
+        if (chartController == null)
+            return;
 
-        return $"{timeManager.year:D4}-{timeManager.month:D2}-{timeManager.day:D2}";
+        chartController.LoadChart(
+            chartController.currentAssetId
+        );
     }
-
 }

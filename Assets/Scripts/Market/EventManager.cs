@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using Data;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ using System.Linq;
 
 public class EventManager : MonoBehaviour
 {
+    [Header("Database")]
     [SerializeField] private MarketDatabase database;
 
     private readonly List<MarketEventData> activeEvents = new();
@@ -21,6 +23,7 @@ public class EventManager : MonoBehaviour
             .ToList();
 
         int occurCount = Random.Range(0, 11);
+
         foreach (MarketEventData marketEvent in sortedEvents)
         {
             if (occurredEvents.Count >= occurCount)
@@ -37,6 +40,7 @@ public class EventManager : MonoBehaviour
 
         return occurredEvents;
     }
+
     private void UpdateCanAriseStates()
     {
         foreach (MarketEventData marketEvent in database.events)
@@ -50,20 +54,22 @@ public class EventManager : MonoBehaviour
             marketEvent.canArise = CanEventArise(marketEvent);
         }
     }
+
     private bool CanEventArise(MarketEventData marketEvent)
     {
-        if (marketEvent.prerequisiteEventIds.Count == 0)
+        if (marketEvent.prerequisiteEventIds == null ||
+            marketEvent.prerequisiteEventIds.Count == 0)
             return true;
 
         foreach (string prerequisiteId in marketEvent.prerequisiteEventIds)
         {
             MarketEventData prerequisiteEvent =
-                database.events.FirstOrDefault(e => e.id == prerequisiteId);
+                database.events.FirstOrDefault(
+                    e => e.id == prerequisiteId
+                );
 
-            if (prerequisiteEvent == null)
-                return false;
-
-            if (!prerequisiteEvent.isArise)
+            if (prerequisiteEvent == null ||
+                !prerequisiteEvent.isArise)
                 return false;
         }
 
@@ -91,7 +97,8 @@ public class EventManager : MonoBehaviour
 
         foreach (EventImpactData impact in marketEvent.impacts)
         {
-            AssetData asset = database.assets.Find(a => a.id == impact.assetId);
+            AssetData asset =
+                database.assets.Find(a => a.id == impact.assetId);
 
             if (asset == null)
                 continue;
@@ -102,38 +109,47 @@ public class EventManager : MonoBehaviour
                     asset.isAvailable = true;
                     asset.isListed = true;
                     break;
+
                 case AssetStateAction.Delist:
                     asset.isListed = false;
                     break;
+
                 case AssetStateAction.Reveal:
                     asset.isAvailable = true;
                     break;
             }
+
             Debug.Log($"{asset.name} 자산 영향 적용");
         }
     }
 
-    private void ApplyEventToEventImpact(MarketEventData marketEvent)
+    private void ApplyEventToEventImpact(
+        MarketEventData marketEvent)
     {
         if (marketEvent.eventImpacts == null)
             return;
 
-        foreach (EventToEventImpactData eventImpact in marketEvent.eventImpacts)
+        foreach (EventToEventImpactData eventImpact
+            in marketEvent.eventImpacts)
         {
             MarketEventData targetEvent =
-                database.events.Find(e => e.id == eventImpact.eventId);
+                database.events.Find(
+                    e => e.id == eventImpact.eventId
+                );
 
-            if (targetEvent == null)
+            if (targetEvent == null || targetEvent.isArise)
                 continue;
 
-            if (targetEvent.isArise)
-                continue;
-
-            targetEvent.probability += eventImpact.probabilityChange;
-            targetEvent.probability = Mathf.Clamp(targetEvent.probability, 0f, 100f);
+            targetEvent.probability = Mathf.Clamp(
+                targetEvent.probability +
+                eventImpact.probabilityChange,
+                0f,
+                100f
+            );
 
             Debug.Log(
-                $"{targetEvent.title} 발생 확률 변경: {targetEvent.probability}%"
+                $"{targetEvent.title} 발생 확률 변경: " +
+                $"{targetEvent.probability}%"
             );
         }
     }

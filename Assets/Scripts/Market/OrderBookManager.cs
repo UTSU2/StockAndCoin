@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using UnityEngine;
 using Data;
@@ -7,14 +8,9 @@ public class OrderBookManager : MonoBehaviour
     [Header("Database")]
     [SerializeField] private MarketDatabase database;
 
-    [Header("Order Book Settings")]
-    [SerializeField] private int orderBookLevelCount = 10;
-    [SerializeField] private int minQuantity = 10;
-    [SerializeField] private int maxQuantity = 100;
-
     private readonly Dictionary<string, OrderBookData> orderBooks = new();
 
-    private void Start()
+    private void Awake()
     {
         InitializeOrderBooks();
     }
@@ -23,77 +19,21 @@ public class OrderBookManager : MonoBehaviour
     {
         orderBooks.Clear();
 
+        if (database == null)
+        {
+            Debug.LogError(
+                "[OrderBookManager] MarketDatabase가 연결되지 않았습니다."
+            );
+            return;
+        }
+
         foreach (AssetData asset in database.assets)
         {
-            float currentPrice = GetCurrentPrice(asset);
-
             OrderBookData orderBook =
-                CreateOrderBook(asset.id, currentPrice);
+                new OrderBookData(asset.id);
 
             orderBooks.Add(asset.id, orderBook);
-
-            Debug.Log(
-                $"{asset.id} 호가 생성 완료 " +
-                $"/ 매수 {orderBook.buyOrders.Count}개 " +
-                $"/ 매도 {orderBook.sellOrders.Count}개"
-            );
         }
-    }
-
-    private OrderBookData CreateOrderBook(
-        string assetId,
-        float currentPrice)
-    {
-        OrderBookData orderBook = new OrderBookData(assetId);
-
-        float tickSize = GetTickSize(currentPrice);
-
-        for (int i = 1; i <= orderBookLevelCount; i++)
-        {
-            float buyPrice =
-                currentPrice - tickSize * i;
-
-            float sellPrice =
-                currentPrice + tickSize * i;
-
-            int buyQuantity =
-                Random.Range(minQuantity, maxQuantity + 1);
-
-            int sellQuantity =
-                Random.Range(minQuantity, maxQuantity + 1);
-
-            OrderBookLevel buyLevel =
-                new OrderBookLevel(buyPrice);
-
-            buyLevel.orders.Add(
-                new LimitOrder(
-                    assetId,
-                    buyPrice,
-                    buyQuantity,
-                    true,
-                    false
-                )
-            );
-
-            orderBook.buyOrders.Add(buyLevel);
-
-            OrderBookLevel sellLevel =
-                new OrderBookLevel(sellPrice);
-
-            sellLevel.orders.Add(
-                new LimitOrder(
-                    assetId,
-                    sellPrice,
-                    sellQuantity,
-                    false,
-                    false
-                )
-            );
-
-            orderBook.sellOrders.Add(sellLevel);
-        }
-
-        return orderBook;
     }
 
     public OrderBookData GetOrderBook(string assetId)
@@ -108,24 +48,129 @@ public class OrderBookManager : MonoBehaviour
         return null;
     }
 
-    private float GetCurrentPrice(AssetData asset)
+    public bool AddOrder(LimitOrder order)
     {
-        List<CandleData> candles =
-            database.GetCandlesByAsset(asset.id);
+        if (order == null ||
+            order.price <= 0f ||
+            order.quantity <= 0)
+            return false;
 
-        if (candles == null || candles.Count == 0)
-            return asset.basePrice;
+        OrderBookData orderBook =
+            GetOrderBook(order.assetId);
 
-        CandleData latestCandle =
-            candles[candles.Count - 1];
+        if (orderBook == null)
+            return false;
 
-        return latestCandle.close;
+        List<OrderBookLevel> levels =
+            order.isBuy
+                ? orderBook.buyOrders
+                : orderBook.sellOrders;
+
+        OrderBookLevel level =
+            levels.Find(l =>
+                Mathf.Approximately(l.price, order.price));
+
+        if (level == null)
+        {
+            level = new OrderBookLevel(order.price);
+            levels.Add(level);
+        }
+
+        level.orders.Add(order);
+
+        SortOrderBook(levels, order.isBuy);
+
+        return true;
     }
 
-    private float GetTickSize(float price)
+    private void SortOrderBook(
+        List<OrderBookLevel> levels,
+        bool isBuy)
     {
-        // 임시 호가 단위
-        return 10f;
+        if (isBuy)
+        {
+            levels.Sort(
+                (a, b) => b.price.CompareTo(a.price)
+            );
+        }
+        else
+        {
+            levels.Sort(
+                (a, b) => a.price.CompareTo(b.price)
+            );
+        }
     }
 
+    public bool RemoveOrder(string assetId, string orderId)
+    {
+        OrderBookData orderBook =
+            GetOrderBook(assetId);
+
+        if (orderBook == null)
+            return false;
+
+        bool removed = false;
+
+        removed |= RemoveOrderFromLevels(
+            orderBook.buyOrders,
+            orderId
+        );
+
+        removed |= RemoveOrderFromLevels(
+            orderBook.sellOrders,
+            orderId
+        );
+
+        return removed;
+    }
+
+    private bool RemoveOrderFromLevels(
+        List<OrderBookLevel> levels,
+        string orderId)
+    {
+        bool removed = false;
+
+        foreach (OrderBookLevel level in levels)
+        {
+            int count = level.orders.RemoveAll(
+                order => order.orderId == orderId
+            );
+
+            if (count > 0)
+                removed = true;
+        }
+
+        levels.RemoveAll(
+            level => level.orders.Count == 0
+        );
+
+        return removed;
+    }
+
+    public void RemoveEmptyOrders(string assetId)
+    {
+        OrderBookData orderBook =
+            GetOrderBook(assetId);
+
+        if (orderBook == null)
+            return;
+
+        RemoveEmptyLevels(orderBook.buyOrders);
+        RemoveEmptyLevels(orderBook.sellOrders);
+    }
+
+    private void RemoveEmptyLevels(
+        List<OrderBookLevel> levels)
+    {
+        foreach (OrderBookLevel level in levels)
+        {
+            level.orders.RemoveAll(
+                order => order.quantity <= 0
+            );
+        }
+
+        levels.RemoveAll(
+            level => level.orders.Count == 0
+        );
+    }
 }

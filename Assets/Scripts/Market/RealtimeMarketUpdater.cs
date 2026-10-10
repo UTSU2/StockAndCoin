@@ -4,10 +4,10 @@ using Data;
 public class RealtimeMarketUpdater : MonoBehaviour
 {
     [Header("Database")]
-    public MarketDatabase database;
+    [SerializeField] private MarketDatabase database;
 
     [Header("Chart")]
-    public ChartController chartController;
+    [SerializeField] private ChartController chartController;
 
     [Header("Realtime Setting")]
     public TimeManager timeManager;
@@ -17,62 +17,49 @@ public class RealtimeMarketUpdater : MonoBehaviour
 
     private float timer;
 
-    void Update()
+    public void UpdateTradePrice(
+        string assetId,
+        float tradePrice,
+        int quantity)
     {
         if (database == null)
             return;
-        if (timeManager == null || !timeManager.IsMarketOpen)
+
+        if (tradePrice <= 0f || quantity <= 0)
             return;
 
-        timer += Time.deltaTime;
+        CandleChartData chart = database.candleCharts
+            .Find(c => c.assetId == assetId);
 
-        if (timer >= updateInterval)
-        {
-            timer = 0f;
+        if (chart == null ||
+            chart.candles == null ||
+            chart.candles.Count == 0)
+            return;
 
-            UpdateRealtimePrices();
-            RefreshChart();
-        }
+        CandleData candle =
+            chart.candles[chart.candles.Count - 1];
+
+        candle.close = tradePrice;
+
+        if (tradePrice > candle.high)
+            candle.high = tradePrice;
+
+        if (tradePrice < candle.low)
+            candle.low = tradePrice;
+
+        candle.volume += quantity;
+
+        RefreshChart(assetId);
     }
 
-    private void UpdateRealtimePrices()
-    {
-        Debug.Log("실시간 가격 변동 실행");
-
-        foreach (AssetData asset in database.assets)
-        {
-            Debug.Log($"변동 대상: {asset.id}");
-        }
-        foreach (AssetData asset in database.assets)
-        {
-            CandleChartData chart = database.candleCharts
-                .Find(c => c.assetId == asset.id);
-
-            if (chart == null || chart.candles == null || chart.candles.Count == 0)
-                continue;
-
-            CandleData currentCandle = chart.candles[chart.candles.Count - 1];
-
-            float moveRate = Random.Range(-asset.currentMoveRange, asset.currentMoveRange);
-            float newClose = currentCandle.close * (1f + moveRate);
-
-            currentCandle.close = newClose;
-
-            if (newClose > currentCandle.high)
-                currentCandle.high = newClose;
-
-            if (newClose < currentCandle.low)
-                currentCandle.low = newClose;
-
-            currentCandle.volume += Random.Range(volumePerTickMin, volumePerTickMax);
-        }
-    }
-
-    private void RefreshChart()
+    private void RefreshChart(string assetId)
     {
         if (chartController == null)
             return;
 
-        chartController.LoadChart(chartController.currentAssetId);
+        if (chartController.currentAssetId != assetId)
+            return;
+
+        chartController.LoadChart(assetId);
     }
 }
